@@ -7,7 +7,7 @@ const deletePost = () =>{
         alert("hello")
     }
     const PublishDraft = () =>{
-
+       
     }
     return (
         <div className='flex justify-center md:w-4/5'>

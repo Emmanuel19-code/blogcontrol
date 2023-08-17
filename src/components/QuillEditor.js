@@ -1,7 +1,7 @@
 import { useState } from "react"
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { createPost, updatePost } from "../api/BlogPost";
+import { createPost, updatePost,savedToDraft } from "../api/BlogPost";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -9,17 +9,25 @@ const QuillEditor = ({buttonName}) => {
     const [title,setTitle] = useState()
     const [content,setContent] = useState()
     const [image,setImage]=useState()
-    const [selectedCategory,SetSelectedCategory] = useState("")
+    const [selectedCategory,setSelectedCategory] = useState()
     const PublishPost =async () =>{
       if(buttonName === "Publish"){
-        await createPost(title,content,image,selectedCategory)
+        const response = await createPost(title,content,image,selectedCategory)
+        if(response=== "true"){
+          setTitle()
+          setContent()
+          setSelectedCategory()
+        }
       }
       else{
          updatePost()
       }
     }
     const SelectCategory = (e) =>{
-       SetSelectedCategory(e.target.value)
+       setSelectedCategory(e.target.value)
+    }
+    const saveToDraft =async()=>{
+      await savedToDraft (title,content,image,selectedCategory)
     }
   return (
     <div className="md:flex items-center m-1 gap-4">
@@ -40,14 +48,14 @@ const QuillEditor = ({buttonName}) => {
              className="h-60"
           />
          </div>
-          <div class="md:flex items-center justify-center w-full md:mt-10 mt-14">
-             <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200  hover:bg-gray-100 ">
-                <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                  <svg aria-hidden="true" class="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                    <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
-                    <p class="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+          <div className="md:flex items-center justify-center w-full md:mt-10 mt-14">
+             <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200  hover:bg-gray-100 ">
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  <svg aria-hidden="true" className="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                    <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
+                    <p className="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
                 </div>
-              <input id="dropzone-file" type="file" class="hidden" 
+              <input id="dropzone-file" type="file" className="hidden" 
                value={image}
                onChange={(e)=>{setImage(e.target.value)}}
               />
@@ -111,7 +119,7 @@ const QuillEditor = ({buttonName}) => {
 
                 <div className="flex items-center justify-between m-2">
                     <div className="border border-gray-300 p-1">
-                        <p className="text-teal-500">Save as a Draft</p>
+                        <p className="text-teal-500" onClick={saveToDraft}>Save as a Draft</p>
                     </div>
                     <div>
                         <button className="bg-teal-600 p-1 text-white rounded"

@@ -12,42 +12,24 @@ const loginAccount =async (username,password) =>{
         username:username,
         password:password
     }
+    const notify = (message) => toast(message);
   await axios.post("user/login",data).
   then((res)=>{
+       console.log(res);
        success = res.data.message
        token=res.data.token
-   }).catch(async(error)=>{
-      if(error.response){
-        errormessage = error.response.data.msg
-       }
-   })
-   if(success){
-     const notify = (message) => toast(message);
-     notify(success)
+       notify(success)
      localStorage.setItem("token",token)
-     return (
-          <div>
-                <ToastContainer 
-                hideProgressBar={true}
-                />
-            </div>
-     )
-   }else{
-     const notify = (message) => toast(message);
-     notify(errormessage)
-     return (
-          <div>
-                <ToastContainer 
-                hideProgressBar={true}
-                />
-            </div>
-     )
-   }
+   }).catch((error)=>{
+        errormessage = error.response.data.msg
+        console.log(error);
+        notify(errormessage)
+   })
 }
 
 
 const createAccount = async(name,email,username,password,image)=>{
-     let errormessage =""
+     let errormessage,status =""
     let success,token=""
     const data ={
      name:name,
@@ -61,39 +43,24 @@ const createAccount = async(name,email,username,password,image)=>{
     console.log(res);
        success = res.data.msg
        token=res.data.otpcookie
-  }).catch((error)=>{
-       if(error.response){
-        errormessage = error.response.data.msg
-       } 
-  })
-    if(success){
-     const notify = (message) => toast(message);
+       const notify = (message) => toast(message);
      notify(success)
      localStorage.setItem("otpcookie",token)
-     return (
-          <div>
-                <ToastContainer 
-                hideProgressBar={true}
-                />
-            </div>
-     )
-   }else{
-     const notify = (message) => toast(message);
-     notify(errormessage)
-     return (
-          <div>
-                <ToastContainer 
-                hideProgressBar={true}
-                />
-            </div>
-     )
-   }
+     status=true
+  }).catch((error)=>{
+        errormessage = error.response.data.msg
+        const notify = (message) => toast(message);
+       notify(errormessage)
+       status=false
+  })
+ return status
 }
 
 
 
 const otpverification =async (otp) =>{
-   let errormessage,success=""
+        let errormessage,status =""
+    let success,token=""
    const otp_cookie = localStorage.getItem("otpcookie")
    const headers = { 'Authorization': `Bearer ${otp_cookie}`};
    const data={
@@ -101,46 +68,32 @@ const otpverification =async (otp) =>{
    }
    await axios.post("user/user-verification",data,{headers})
    .then((res)=>{
-        success = res.data
-   })
-   .catch((error)=>{
-         if(error.response){
-          errormessage = error.response.data.msg
-       }
-   })
-  if(success){
+        success = res.data.msg
      const notify = (message) => toast(message);
      notify(success)
-    
-     return (
-          <div>
-                <ToastContainer 
-                hideProgressBar={true}
-                />
-            </div>
-     )
-   }else{
-     const notify = (message) => toast(message);
+     localStorage.setItem("otpcookie","")
+     status=true
+   })
+   .catch((error)=>{
+    errormessage = error.response.data.msg
+    const notify = (message) => toast(message);
      notify(errormessage)
-     return (
-          <div>
-                <ToastContainer 
-                hideProgressBar={true}
-                />
-            </div>
-     )
-   }
+     status=false
+   })
+   return status
 }
 
 
 const forgotPassword = async (userInfo)=>{
-   let errormessage,success,_status =""
+   let errormessage,_status,token =""
    const data ={
     userInfo:userInfo
    }
    await axios.post("user/forgotpassword",data).
     then((res)=>{
        _status = res.status
+       token=res.data.otpcookie
+       localStorage.setItem("otpcookie",token)
     })
    .catch((error)=>{
      if(error.response){
@@ -192,38 +145,27 @@ const RequestNewOtp = async ()=>{
 
 const ChangePassword = async(newpassword)=>{
   let errormessage,success,_status =""
+  const otp_cookie = localStorage.getItem("otpcookie")
+   const headers = { 'Authorization': `Bearer ${otp_cookie}`};
   const data = {
     newpassword:newpassword
   }
-   await axios.post("user/newPassword",data).
+   await axios.post("user/newPassword",data,{headers}).
     then((res)=>{
-      success = res.data.msg
+      success = res.data.msg;
+      localStorage.setItem("otpcookie","");
     })
     .catch((error)=>{
     if(error.response){
         errormessage=error.response.data.msg
      }
     })
-    if(success){
-     const notify = (message) => toast(message);
-     notify(success)
-     return (
-          <div>
-                <ToastContainer 
-                hideProgressBar={true}
-                />
-            </div>
-     )
-   }else{
+   if(_status!=200){
      const notify = (message) => toast(message);
      notify(errormessage)
-     return (
-          <div>
-                <ToastContainer 
-                hideProgressBar={true}
-                />
-            </div>
-     )
+   }else{
+    const notify = (message) => toast(message);
+    notify(success)
    }
 }
 

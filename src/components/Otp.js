@@ -14,7 +14,12 @@ const Otp = () => {
 
  const submitOtp =async () =>{
     const numberOtp = firstnumber+secondnumber+thirdnumber+fourthnumber
-    await  otpverification(numberOtp)
+   const status=await  otpverification(numberOtp)
+    setTimeout(()=>{
+          if(status){
+      navigation("/home")
+   }
+   },5000)
      }
   return (
    <div className='flex justify-center items-center h-screen bg-slate-100 flex-col'>

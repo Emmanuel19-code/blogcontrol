@@ -17,7 +17,11 @@ const RegisterPage = () => {
  
   const submitInfo = async() =>{
    const message= await createAccount(name,email,username,password,image) 
-  
+   setTimeout(()=>{
+          if(message){
+      navigation("/accountverification")
+   }
+   },5000)
   }
   const valueFromChild = (value) =>{
      setPassword(value)
@@ -45,8 +49,8 @@ const RegisterPage = () => {
               valueFromChild={valueFromChild}
              />
              <div className="m-2">
-                  <label class="block mb-2 text-sm font-medium text-gray-900 " for="file_input">Upload Profile Picture</label>
-                  <input id="file_input" type="file"  class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50  focus:outline-none" 
+                  <label className="block mb-2 text-sm font-medium text-gray-900 ">Upload Profile Picture</label>
+                  <input id="file_input" type="file"  className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50  focus:outline-none" 
                    name="fileimage"
                    value={image}
                    onChange={(e)=>{setImage(e.target.value)}}

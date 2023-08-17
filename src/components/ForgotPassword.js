@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react"
 import { BiHide } from "react-icons/bi";
 import { BiShow } from "react-icons/bi";
@@ -13,6 +13,7 @@ const ForgotPassword = () => {
    const [show,setShow] = useState(false)
    const [sign,setSign] = useState(false)
    const [disable,setDisabled] = useState(false)
+   const navigation = useNavigate();
  const submitInfo = async() =>{
   const response= await forgotPassword(userInfo)
    if(response === "true"){
@@ -21,7 +22,7 @@ const ForgotPassword = () => {
   }
 
   const ChangeInfo =async() =>{
-   await ChangePassword(newpassword)
+   await ChangePassword(newpassword);
   }
   return (
     <div className="flex justify-center items-center h-screen bg-slate-100 flex-col">
