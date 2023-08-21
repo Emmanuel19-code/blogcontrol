@@ -2,19 +2,21 @@ import  {Link}  from "react-router-dom";
 import {AiOutlineMenu} from "react-icons/ai"
 import { AiOutlineUser } from "react-icons/ai";
 import { FiX} from "react-icons/fi";
-import { useState } from "react";
-import { logout } from "../api/Authentication";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { LoggedOut } from "../store/AuthSlice";
 
 
 const Navbar = () => {
    const [show,setShow] = useState(false)
-   const dispatch = useDispatch()
+   const [profilename,setProfilename]=useState()
+   const [profilePicture,setProfilePicture]=useState("")
    const SignOut = async() =>{
-    // logout()
-     dispatch(LoggedOut())
    }
+   useEffect(()=>{
+    setProfilename(localStorage.getItem("username"))
+    setProfilePicture(localStorage.getItem("profilePicture"))
+   },[])
+  
   return (
     <div className="p-2 border-b flex items-center sticky top-0 bg-white justify-between cursor-pointer">
        <div className="flex md:hidden p-2">
@@ -39,11 +41,15 @@ const Navbar = () => {
                 <Link to={"/edit/writepost"}>Write</Link>
              </p>
             <p className="m-2">
-                <Link to={"/"}>ALL Posts</Link>
+                <Link to={"/home"}>ALL Posts</Link>
              </p>
-             <p className="m-2">
+             {
+              /*
+              <p className="m-2">
                <Link to={"/edit/updatepost"}>Your Uploads</Link>
              </p>
+              */
+             }
              <p className="m-2">
                <Link to={"/edit/draft"}>Drafts</Link>
              </p>
@@ -53,24 +59,29 @@ const Navbar = () => {
         show && 
         <div className="absolute top-12 md:hidden">
            <div id="dropdown" class=" bg-white divide-y mt-2 divide-gray-100 rounded-lg shadow w-44 ">
-            <ul class="py-2 text-sm text-gray-700 " aria-labelledby="dropdownDefaultButton">
+            <ul className="py-2 text-sm text-gray-700 " aria-labelledby="dropdownDefaultButton">
                 <li onClick={()=>{setShow(false)}}>
-                     <Link to={"/edit/writepost"} class="block px-4 py-2 hover:bg-gray-100 ">
+                     <Link to={"/edit/writepost"} className="block px-4 py-2 hover:bg-gray-100 ">
                         Write
                      </Link>
                 </li>
                   <li onClick={()=>{setShow(false)}}>
-                     <Link to={"/"} class="block px-4 py-2 hover:bg-gray-100 ">
+                     <Link to={"/home"} className="block px-4 py-2 hover:bg-gray-100 ">
                         ALL Posts
                      </Link>
                 </li>
-              <li onClick={()=>{setShow(false)}}>
-                <Link to={"/edit/your_uploads"} class="block px-4 py-2 hover:bg-gray-100 ">
+                {
+                  /*
+                   <li onClick={()=>{setShow(false)}}>
+                <Link to={"/edit/your_uploads"} className="block px-4 py-2 hover:bg-gray-100 ">
                        Your Uploads
                      </Link>
              </li>
+                  */
+                }
+             
               <li onClick={()=>{setShow(false)}}>
-                 <Link to={"/edit/draft"} class="block px-4 py-2 hover:bg-gray-100 ">
+                 <Link to={"/edit/draft"} className="block px-4 py-2 hover:bg-gray-100 ">
                        Drafts
                  </Link>
              </li>
@@ -79,9 +90,17 @@ const Navbar = () => {
        </div> 
       }
        <div className="flex items-center">
-        <div className="text-lg">
+        {
+          profilePicture?
+          <div className="w-10 h-10 rounded">
+               <img src={profilePicture} alt="" className="rounded-full"/>
+          </div>
+          :
+          <div className="text-lg">
             <AiOutlineUser/>
         </div>
+        }
+        
             {
               /*
                 <img
@@ -93,7 +112,7 @@ const Navbar = () => {
              />
               */
             }
-             <p className="m-2">manuel</p>
+             <p className="m-2">{profilename}</p>
              <p className="p-1 rounded bg-blue-700 text-white"
              onClick={SignOut}
              >

@@ -1,7 +1,7 @@
 import axios from "./axios"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-//import axios from "axios";
+
 
 
 const createPost =async (title,content,image,selectedCategory) =>{
@@ -14,7 +14,7 @@ const createPost =async (title,content,image,selectedCategory) =>{
     }
     const token = localStorage.getItem("token")
    const headers = { 'Authorization': `Bearer ${token}`};
-  await axios.post("/content/create",data,{headers})
+  await axios.post("/admin/create",data,{headers})
   .then((res)=>{
      success = res.data.msg
      const notify = (message) => toast(message);
@@ -39,7 +39,7 @@ const updatePost = async(title,information)=>{
    }
    const token = localStorage.getItem("token")
    const headers = { 'Authorization': `Bearer ${token}`};
-   await axios.post("/updateContent:id",data,{headers})
+   await axios.post("/admin/updateContent:id",data,{headers})
    .then((res)=>{
      success = res.data.message
    })
@@ -75,7 +75,7 @@ const deletePost = async(id)=>{
   let message=""
   const token = localStorage.getItem("token")
    const headers = { 'Authorization': `Bearer ${token}`};
-  await axios.delete(`/deleteContent:${id}`)
+  await axios.delete(`/admin/deleteContent:${id}`,{headers})
   .then((res)=>{
     message=res.data
   }).catch((error)=>{
@@ -96,21 +96,22 @@ const savedToDraft =async (title,content,image,selectedCategory) =>{
     }
     const token = localStorage.getItem("token")
    const headers = { 'Authorization': `Bearer ${token}`};
-    await axios.post("/content/saveToDrafts",data,{headers})
+    await axios.post("/admin/saveToDrafts",data,{headers})
     .then((res)=>{
          success = res.data.msg
      const notify = (message) => toast(message);
      notify(success)
-     _status="true"
+     _status=true
     })
     .catch((error)=>{
       if(error.response){
         errormessage = error.response.data.msg
         const notify = (message) => toast(message);
         notify(errormessage)
-        _status="false"
+        _status=false
        }
     })
+    return _status
 }
 
 const getCategoryContent = async (category)=>{
@@ -131,7 +132,7 @@ const draftContent = async ()=>{
   let message = ""
   const token = localStorage.getItem("token")
    const headers = { 'Authorization': `Bearer ${token}`};
-  await axios.get("/draftContent")
+  await axios.get("/admin/draftContent")
   .then((res)=>{
 
   })
@@ -143,7 +144,20 @@ const draftContent = async ()=>{
   return message
 }
 
-
+const getAllPost = async()=>{
+   let message,data = ""
+  const token = localStorage.getItem("token")
+   const headers = { 'Authorization': `Bearer ${token}`};
+  await axios.get("/admin/getAllcontent",{headers})
+  .then((response)=>{
+      data=response.data.content;
+      console.log(response);
+  })
+  .catch((error)=>{
+      console.log(error);
+  })
+  return data
+}
 
 export {
     createPost,
@@ -151,5 +165,6 @@ export {
     deletePost,
     savedToDraft,
     getCategoryContent,
-    draftContent
+    draftContent,
+    getAllPost
 }

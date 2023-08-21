@@ -17,7 +17,7 @@ const Otp = () => {
    const status=await  otpverification(numberOtp)
     setTimeout(()=>{
           if(status){
-      navigation("/home")
+      navigation("/")
    }
    },5000)
      }

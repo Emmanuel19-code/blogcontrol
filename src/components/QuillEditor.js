@@ -2,14 +2,17 @@ import { useState } from "react"
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { createPost, updatePost,savedToDraft } from "../api/BlogPost";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const QuillEditor = ({buttonName}) => {
-    const [title,setTitle] = useState()
-    const [content,setContent] = useState()
-    const [image,setImage]=useState()
+    const [title,setTitle] = useState("")
+    const [content,setContent] = useState("")
+    const [image,setImage]=useState("")
     const [selectedCategory,setSelectedCategory] = useState()
+   
+
+
     const PublishPost =async () =>{
       if(buttonName === "Publish"){
         const response = await createPost(title,content,image,selectedCategory)
@@ -17,6 +20,7 @@ const QuillEditor = ({buttonName}) => {
           setTitle()
           setContent()
           setSelectedCategory()
+          setImage("")
         }
       }
       else{
@@ -29,6 +33,22 @@ const QuillEditor = ({buttonName}) => {
     const saveToDraft =async()=>{
       await savedToDraft (title,content,image,selectedCategory)
     }
+ 
+
+ const previewImage=(file)=>{
+   const reader = new FileReader()
+   reader.readAsDataURL(file)
+   reader.onloadend=()=>{
+     setImage(reader.result)
+     console.log(reader.result);
+   }
+  }
+ 
+  const handleChange = (e)=>{
+   const file = e.target.files[0]
+   //setImage(file)
+   previewImage(file)
+  }
   return (
     <div className="md:flex items-center m-1 gap-4">
         <div className="flex-1 ">
@@ -56,8 +76,7 @@ const QuillEditor = ({buttonName}) => {
                     <p className="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
                 </div>
               <input id="dropzone-file" type="file" className="hidden" 
-               value={image}
-               onChange={(e)=>{setImage(e.target.value)}}
+               onChange={(e)=>handleChange(e)}
               />
               </label>
           </div> 

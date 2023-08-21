@@ -5,23 +5,37 @@ import { createAccount } from "../api/Authentication";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+
 const RegisterPage = () => {
   const navigation = useNavigate()
   const [name,setName] = useState("")
   const [email,setEmail] = useState("")
   const [username,setUsername] = useState("")
   const [password,setPassword] = useState("")
-  const [image,setImage] = useState("")
-  const [message,setMessage] = useState("")
-  const [sign,setSign] = useState(false)
- 
-  const submitInfo = async() =>{
-   const message= await createAccount(name,email,username,password,image) 
-   setTimeout(()=>{
-          if(message){
-      navigation("/accountverification")
+  const [profilePicture,setProfilePicture] = useState("")
+  const[previewedImage,setPreviewedImage]= useState("")
+
+ const previewImage=(file)=>{
+   const reader = new FileReader()
+   reader.readAsDataURL(file)
+   reader.onloadend=()=>{
+     setProfilePicture(reader.result)
    }
-   },5000)
+  }
+ 
+  const handleChange = (e)=>{
+   const file = e.target.files[0]
+   setPreviewedImage(file)
+   previewImage(file)
+  }
+  const submitInfo = async() =>{
+   const message= await createAccount(name,email,username,password,profilePicture) 
+  setTimeout(()=>{
+         if(message){
+     navigation("/accountverification")
+  }
+  },5000)
+  
   }
   const valueFromChild = (value) =>{
      setPassword(value)
@@ -52,8 +66,7 @@ const RegisterPage = () => {
                   <label className="block mb-2 text-sm font-medium text-gray-900 ">Upload Profile Picture</label>
                   <input id="file_input" type="file"  className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50  focus:outline-none" 
                    name="fileimage"
-                   value={image}
-                   onChange={(e)=>{setImage(e.target.value)}}
+                   onChange={(e)=>handleChange(e)}
                   />
              </div>
              <button className="bg-blue-500 text-white font-bold p-1 rounded m-1 cursor-pointer"

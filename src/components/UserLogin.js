@@ -1,22 +1,25 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react"
 import { BiHide } from "react-icons/bi";
 import { BiShow } from "react-icons/bi";
 import { loginAccount } from "../api/Authentication";
-import { useDispatch } from "react-redux";
-import { isLoggedIn } from "../store/AuthSlice";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
 const UserLogin = () => {
+   const navigation = useNavigate()
   const [username,setUsername] = useState()
   const [password,setPassword] = useState()
-  const [errorMessage,setErrorMessage] = useState()
   const [sign,setSign] = useState(false)
-  const dispatch = useDispatch()
   const submitInfo =async() => {
-   await loginAccount(username,password)
+   const status=await loginAccount(username,password)
+   console.log(status);
+    setTimeout(()=>{
+         if(status){
+     navigation("/home")
+  }
+  },5000)
   };
     const valueFromChild =(value) =>{
       setPassword(value)

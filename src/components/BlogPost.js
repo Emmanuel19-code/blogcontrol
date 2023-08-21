@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { AiTwotoneDelete } from "react-icons/ai";
 import {AiOutlineEdit} from "react-icons/ai"
 
-const BlogPost = ({id,name,time,title,description,image}) => {
+const BlogPost = ({title,content,id,image,username}) => {
     const deletePost = () =>{
        deletePost(id)
     }
@@ -11,7 +11,7 @@ const BlogPost = ({id,name,time,title,description,image}) => {
         <div className='p-2 m-4 cursor-pointer  md:w-4/5'>
          <div className=''>
             <img
-            src="/assets/Image2.png"
+            src={image}
             width={700}
             height={200}
             alt='Info Picture'
@@ -27,7 +27,7 @@ const BlogPost = ({id,name,time,title,description,image}) => {
                 className='w-14 h-14 rounded-full'
                 />
                 <div className='ml-2'>
-                    <p className='font-bold'>Emma</p>
+                    <p className='font-bold'>{username}</p>
                     <p className='text-sm font-medium'>Posted 3 hour ago</p>
                 </div>
                 <div className='flex items-center ml-1'>
@@ -45,10 +45,10 @@ const BlogPost = ({id,name,time,title,description,image}) => {
                 </div>
             </div>
             <h3 className='font-bold text-2xl mt-2'>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit
+                {title}
              </h3>
             <p className='md:w-4/5'>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam, deleniti doloribus a sint voluptate quas, modi eos repellat asperiores neque aperiam illum atque saepe numquam eligendi ex explicabo accusantium mollitia?
+               {content}
             </p>
         </div>
     </div>

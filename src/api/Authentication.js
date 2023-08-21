@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const loginAccount =async (username,password) =>{
     let errormessage =""
-    let success,token=""
+    let success,token,profilename,profilePicture,status=""
     const data={
         username:username,
         password:password
@@ -17,18 +17,24 @@ const loginAccount =async (username,password) =>{
   then((res)=>{
        console.log(res);
        success = res.data.message
+       profilename = res.data.username
+       profilePicture=res.data.profilePicture
        token=res.data.token
        notify(success)
      localStorage.setItem("token",token)
+     localStorage.setItem("username",profilename)
+     localStorage.setItem("profilePicture",profilePicture)
+     status=true
    }).catch((error)=>{
         errormessage = error.response.data.msg
-        console.log(error);
         notify(errormessage)
+        status=false
    })
+   return status
 }
 
 
-const createAccount = async(name,email,username,password,image)=>{
+const createAccount = async(name,email,username,password,profilePicture)=>{
      let errormessage,status =""
     let success,token=""
     const data ={
@@ -36,7 +42,7 @@ const createAccount = async(name,email,username,password,image)=>{
      email:email,
      username:username,
      password:password,
-     image:image
+     profilePicture:profilePicture
   }
   await axios.post("user/register",data)
   .then((res)=>{
